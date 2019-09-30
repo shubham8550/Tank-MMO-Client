@@ -73,20 +73,20 @@ public class World extends JFrame {
     }
 
     private void carMoveDown() {
-        car.setBounds(car.getX(),car.getY()+2,car.getWidth(),car.getHeight());
+        car.setBounds(car.getX(),car.getY()+Res.speedOfCar,car.getWidth(),car.getHeight());
     }
 
     private void carMoveRight() {
-        car.setBounds(car.getX()+2,car.getY(),car.getWidth(),car.getHeight());
+        car.setBounds(car.getX()+Res.speedOfCar,car.getY(),car.getWidth(),car.getHeight());
     }
 
     private void carMoveLeft() {
 
-        car.setBounds(car.getX()-2,car.getY(),car.getWidth(),car.getHeight());
+        car.setBounds(car.getX()-Res.speedOfCar,car.getY(),car.getWidth(),car.getHeight());
     }
 
     private void carMoveUp() {
-        car.setBounds(car.getX(),car.getY()-2,car.getWidth(),car.getHeight());
+        car.setBounds(car.getX(),car.getY()-Res.speedOfCar,car.getWidth(),car.getHeight());
 
     }
 
