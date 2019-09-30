@@ -29,7 +29,7 @@ class CarDraw extends JPanel {
         repaint();
     }
     public void carFaceUp(){
-        this.img = new ImageIcon("truck.png").getImage();
+        this.img = new ImageIcon("Car.png").getImage();
 
         Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
         setPreferredSize(size);
