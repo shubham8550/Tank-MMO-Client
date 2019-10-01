@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class Boundaries {
+public class Boundaries
+{
 
     static ArrayList<Integer> X=new ArrayList<Integer>();
     static ArrayList<Integer> Y=new ArrayList<Integer>();
@@ -100,5 +101,33 @@ public class Boundaries {
 
 
     }
+
+
+    public static void add(JButton b)
+    {
+        Boundaries.X.add(new Integer(b.getX()));
+        Boundaries.Y.add(new Integer(b.getY()));
+        Boundaries.Height.add(new Integer(b.getHeight()));
+        Boundaries.Width.add(new Integer(b.getWidth()));
+    }
+
+    public static void add(JLabel b)
+    {
+        Boundaries.X.add(new Integer(b.getX()));
+        Boundaries.Y.add(new Integer(b.getY()));
+        Boundaries.Height.add(new Integer(b.getHeight()));
+        Boundaries.Width.add(new Integer(b.getWidth()));
+    }
+
+    public static void add(JPanel b)
+    {
+        Boundaries.X.add(new Integer(b.getX()));
+        Boundaries.Y.add(new Integer(b.getY()));
+        Boundaries.Height.add(new Integer(b.getHeight()));
+        Boundaries.Width.add(new Integer(b.getWidth()));
+    }
+
+
+
 
 }

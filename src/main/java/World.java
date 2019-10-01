@@ -29,8 +29,10 @@ public class World extends JFrame {
         //spwan location
         car.setBounds(300,500,car.getWidth(),car.getHeight());
 
-
-
+        //MMO syncyng
+        Thread thread=new mmoServerSync(this,car,face);
+        thread.start();
+        //
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -116,19 +118,24 @@ public class World extends JFrame {
         b.setBounds(30,100,500,30);
         b.setEnabled(false);
         add(b);
-        Boundaries.addRistriction(b.getX(),b.getY(),b.getWidth(),b.getHeight());
+        Boundaries.add(b);
+        //Boundaries.addRistriction(b.getX(),b.getY(),b.getWidth(),b.getHeight());
+
+
 
         JButton b1=new JButton();
         b1.setBounds(30,200,500,30);
         add(b1);
+        Boundaries.add(b1);
         b1.setEnabled(false);
-        Boundaries.addRistriction(b1.getX(),b1.getY(),b1.getWidth(),b1.getHeight());
+        //Boundaries.addRistriction(b1.getX(),b1.getY(),b1.getWidth(),b1.getHeight());
 
         JButton b2=new JButton();
         b2.setBounds(30,300,500,30);
         add(b2);
+        Boundaries.add(b2);
         b2.setEnabled(false);
-        Boundaries.addRistriction(b2.getX(),b2.getY(),b2.getWidth(),b2.getHeight());
+        //Boundaries.addRistriction(b2.getX(),b2.getY(),b2.getWidth(),b2.getHeight());
 
     }
 
