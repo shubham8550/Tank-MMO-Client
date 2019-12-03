@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 public class World extends JFrame {
 
     CarDraw car;
-    char face;
+    //char face;
 
     World(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -13,7 +13,7 @@ public class World extends JFrame {
         setLayout(null);
         setResizable(false);
         car=new CarDraw();
-        face='n';//shows where is car facing  {L,R,U,D}
+       // face='n';//shows where is car facing  {L,R,U,D} moves to resources  (Res)
 
         add(car);
         //extra logic
@@ -30,7 +30,7 @@ public class World extends JFrame {
         car.setBounds(300,500,car.getWidth(),car.getHeight());
 
         //MMO syncyng
-        Thread thread=new mmoServerSync(this,car,face);
+        Thread thread=new mmoServerSync(this,car);
         thread.start();
         //
         addKeyListener(new KeyAdapter() {
@@ -40,7 +40,7 @@ public class World extends JFrame {
 
                 if(Boundaries.check(car))
                 {
-                    Boundaries.bounceBack(car, face);
+                    Boundaries.bounceBack(car, Res.face);
                     return;
                 }
 
@@ -49,18 +49,18 @@ public class World extends JFrame {
                     {
 
                         //up pressed
-                        if(face != 'U'){
+                        if(Res.face != 'U'){
                             car.carFaceUp();
-                            face='U';
+                            Res.face='U';
                         }
                         carMoveUp();
 
                     }
                 else if(e.getKeyCode()==KeyEvent.VK_DOWN)
                     {
-                        if(face != 'D'){
+                        if(Res.face != 'D'){
                             car.carFaceDown();
-                            face='D';
+                            Res.face='D';
                         }
 
                         carMoveDown();
@@ -69,18 +69,18 @@ public class World extends JFrame {
                 else if(e.getKeyCode()==KeyEvent.VK_LEFT)
                     {
                         //left pressed
-                        if(face != 'L'){
+                        if(Res.face != 'L'){
                             car.carFaceLeft();
-                            face='L';
+                            Res.face='L';
 
                         }
                         carMoveLeft();
                     }
                 else if(e.getKeyCode()==KeyEvent.VK_RIGHT)
                     {
-                        if(face != 'R'){
+                        if(Res.face != 'R'){
                             car.carFaceRight();
-                            face='R';
+                            Res.face='R';
                         }
                         //right pressed
                         carMoveRight();
