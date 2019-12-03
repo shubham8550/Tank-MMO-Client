@@ -4,7 +4,7 @@ import java.awt.*;
 class CarDraw extends JPanel {
 
     private Image img;
-
+    public String carID;
 
     public CarDraw() {
         this.img = new ImageIcon("Car.png").getImage();

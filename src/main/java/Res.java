@@ -8,6 +8,8 @@ public class Res {
     public static int serverPort=7777;
     public static String serverAddress="localhost";
     public static int clientID=0;
+    public static char face='n';
+
 
 
 

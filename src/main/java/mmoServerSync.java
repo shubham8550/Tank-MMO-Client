@@ -1,133 +1,141 @@
 import javax.swing.*;
 import java.io.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.*;
-import java.util.Scanner;
+import java.util.ArrayList;
+
 
 public class mmoServerSync extends Thread{
+    DatagramSocket socket = null;
     JFrame frame;
     CarDraw car;
     WorldStat worldStat;
-    char face;
-    public mmoServerSync(JFrame frame,CarDraw car,char face) {
+
+    String PlayerID;
+    //char face;
+    public mmoServerSync(JFrame frame,CarDraw car) {
         this.frame=frame;
         this.car=car;
-        this.face=face;
 
     }
-    private Socket socket            = null;
-    private DataInputStream  dis   = null;
-    private DataOutputStream dos     = null;
+
 
     @Override
     public void run() {
-        super.run();
-        worldStat=new WorldStat();
 
-        System.out.println("Connectiong To server ..");
-        // establish a connection
-        try
-        {
-            socket = new Socket(Res.serverAddress, Res.serverPort);
-            System.out.println("Connected");
-
-            // takes input from terminal
-            dis  = new DataInputStream(socket.getInputStream());
-
-            // sends output to the socket
-            dos    = new DataOutputStream(socket.getOutputStream());
-        }
-
-        catch(IOException i)
-        {
-            System.out.println(i);
-        }
-        // initialization of socet end
-
-        //ID assigning procedure
-        String id = "";
+        WorldStat temp=null;
+        PlayerID=generateID();
+        byte[] incomingData;
         try {
-            id = dis.readUTF();
+            while (true) {
+                socket = new DatagramSocket();
+                InetAddress IPAddress = InetAddress.getByName("localhost");
+                incomingData = new byte[100000];
+                temp = new WorldStat();
+
+                temp.id.add(PlayerID);
+                temp.name.add("Subham");
+                temp.face.add(Res.face);
+                temp.carModle.add("Default");
+                temp.X.add(car.getX());
+                temp.Y.add(car.getY());
+
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                ObjectOutputStream os = new ObjectOutputStream(outputStream);
+                os.writeObject(temp);
+                byte[] data = outputStream.toByteArray();
+                DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, Res.serverPort);
+                socket.send(sendPacket);
+                System.out.println("Message sent from client");
+
+
+                DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
+                socket.receive(incomingPacket);
+
+
+                byte[] data1 = incomingPacket.getData();
+                ByteArrayInputStream in = new ByteArrayInputStream(data1);
+                ObjectInputStream is = new ObjectInputStream(in);
+                try {
+                    worldStat = (WorldStat) is.readObject();
+                    updateplayers();
+                    System.out.println("Worldstat object received = " + worldStat);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                outputStream.flush();
+                os.flush();
+                data=null;
+                data1=null;
+
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (SocketException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Assigned id for client is :"+id);
-        Res.clientID=Integer.parseInt(id);
-
-        worldStat.id.add(Res.clientID);
-        //ID assigning procedure end
+    }
 
 
+    String generateID() {
 
+        final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        int count = 10;
+        StringBuilder builder = new StringBuilder();
+        while (count-- != 0) {
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
+            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+        }
+        return builder.toString();
+    }
 
+    ArrayList<CarDraw> cars=new ArrayList<CarDraw>();
+    void updateplayers(){
+        try {
+            if(cars.size()!=0){
+                for(int i = 0 ; i < cars.size();i++){
+                    cars.get(i).setVisible(false);
 
-
-        while (true)
-        {
-            try
-            {
-
-                //download updated data
-                System.out.println("downloading");
-                ObjectInputStream ise=new ObjectInputStream(socket.getInputStream());
-                worldStat=(WorldStat) ise.readObject();
-                System.out.println("writing world");
-                //download updated data
-                System.out.println(worldStat.name.get(0)+"  aaaaaaaaa");
-
-                worldStat.X.add(Res.clientID,car.getX());
-                worldStat.Y.add(Res.clientID,car.getY());
-                worldStat.face.add(Res.clientID,face);
-
-                System.out.println("ploading stat");
-
-
-                //upload data
-                ObjectOutputStream os=new ObjectOutputStream(socket.getOutputStream());
-                os.writeObject(worldStat);
-                //upload data end
-                System.out.println("upload stat done done");
-
-
-
-
-
-
-                //example for sending data
-//                line = dis .readLine();
-//                dos.writeUTF(line);
-            if(true){
-                break;
+                }
+                cars.removeAll(cars);
             }
-
-
-            }
-            catch(IOException i)
-            {
-                System.out.println(i);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
-        // close the connection
-        try
-        {
-            dis.close();
-            dos.close();
-            socket.close();
+        int j=0;
+        for(int i=0 ;i< worldStat.id.size(); i++){
+            if (!worldStat.id.get(i).equals(PlayerID)){
+
+                cars.add(new CarDraw());
+                cars.get(j).carID=worldStat.id.get(i);
+                setCarFace(cars.get(j),worldStat.face.get(i));
+                cars.get(j).setBounds(worldStat.X.get(i),worldStat.Y.get(i),cars.get(j).getWidth(),cars.get(j).getHeight());
+                frame.add(cars.get(j));
+
+                j++;
+            }
         }
-        catch(IOException i)
-        {
-            System.out.println(i);
+        frame.repaint();
+    }
+
+
+    void setCarFace(CarDraw ca,char fa){
+        if(fa=='U'){
+            ca.carFaceUp();
+        }else if (fa=='D'){
+            ca.carFaceDown();
+        }else if (fa=='L'){
+            ca.carFaceLeft();
+        }else if (fa=='R'){
+            ca.carFaceRight();
         }
-
-
-
 
     }
 }

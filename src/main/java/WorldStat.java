@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 class WorldStat implements Serializable
 {
-    ArrayList<Integer> id=new ArrayList<Integer>();
+    ArrayList<String> id=new ArrayList<String>();
     ArrayList<String> name=new ArrayList<String>();
 
     ArrayList<String> carModle=new ArrayList<String>();
